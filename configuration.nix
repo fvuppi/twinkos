@@ -1,5 +1,10 @@
 { config, pkgs, ... }:
 
+let
+	unstable = import <nixos-unstable> {
+		config = config.nixpkgs.config;
+	};
+in
 {
 	imports =
 		[
@@ -7,7 +12,11 @@
 			./hardware.nix
 			./fonts.nix	
 		];
-		
+	
+	nixpkgs.overlays = [
+		(import ./overlays/hmcl.nix)
+	];
+	
 	boot.loader.systemd-boot.enable = true;
 	boot.loader.efi.canTouchEfiVariables = true;
 
@@ -43,6 +52,8 @@
 			wf-recorder
 			(callPackage ./pkgs/helium.nix {})
 			cbonsai
+			hmcl
+			unstable.davinci-resolve-studio
 		];
 	};
 
@@ -50,6 +61,7 @@
 		vim
 		wget
 		git
+		gh
 		zsh
 	];
 
